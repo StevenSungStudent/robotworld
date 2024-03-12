@@ -106,35 +106,35 @@ namespace Messaging
 															responseHandler);
 
 				// Build up the remote address to which we will connect
-				boost::asio::ip::tcp::resolver resolver( CommunicationService::getCommunicationService().getIOContext()); // @suppress("Ambiguous problem")
+				boost::asio::ip::tcp::resolver resolver( CommunicationService::getCommunicationService().getIOContext());
 				boost::asio::ip::tcp::resolver::query query( boost::asio::ip::tcp::v4(), host, std::to_string(port));
 				boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve( query);
 				boost::asio::ip::tcp::endpoint endpoint = *endpoint_iterator;
 
 				// Let the session handle any outgoing messages
 				session->getSocket().async_connect( endpoint, // @suppress("Method cannot be resolved") // @suppress("Invalid arguments")
-													[session](const boost::system::error_code& error)
+													[this,session](const boost::system::error_code& error)
 													{
-														Client::handleConnect(session, error);
+														handleConnect(session, error);
 													});
 			}
 		private:
 			/**
 			 *
 			 */
-			static void handleConnect( ClientSession* aSession,
-									   const boost::system::error_code& error)
+			void handleConnect( ClientSession* aSession,
+								const boost::system::error_code& error) const
 			{
 				if (!error)
 				{
 					aSession->start();
 				} else
 				{
-					std::ostringstream os;
-					os << __PRETTY_FUNCTION__ << ": error connecting to " << aSession->getSocket().remote_endpoint().address().to_string() << ":" << aSession->getSocket().remote_endpoint().port() << ", reason: " << error.message();
-					TRACE_DEVELOP(os.str());
-
 					delete aSession;
+
+					std::ostringstream os;
+					os << __PRETTY_FUNCTION__ << ": error connecting to " << host << " at port " << port << ", reason: " << error.message();
+					TRACE_DEVELOP(os.str());
 				}
 			}
 			/**

@@ -30,41 +30,30 @@ namespace Model
 		Robot* robot = dynamic_cast<Robot*>(agent);
 		if(robot)
 		{
-			static std::random_device rd{};
-			static std::mt19937 gen{rd()};
+			std::random_device rd{};
+			std::mt19937 gen{rd()};
 		    std::normal_distribution<> noise{0,LaserDistanceSensor::stddev};
 
 			double angle = Utils::Shape2DUtils::getAngle( robot->getFront());
+
 			std::vector< WallPtr > walls = RobotWorld::getRobotWorld().getWalls();
-
-			wxPoint robotLocation = robot->getPosition();
-
-			wxPoint intersection{-1,-1};
 			for (std::shared_ptr< Wall > wall : walls)
 			{
 				wxPoint wallPoint1 = wall->getPoint1();
 				wxPoint wallPoint2 = wall->getPoint2();
-				wxPoint laserEndpoint{	static_cast<int>(robotLocation.x + std::cos( angle) * laserBeamLength + noise(gen)) ,
-										static_cast<int>(robotLocation.y + std::sin( angle) * laserBeamLength + noise(gen))};
+				wxPoint robotLocation = robot->getPosition();
+				wxPoint laserEndpoint{static_cast<int>(robotLocation.x + std::cos( angle) * laserBeamLength + noise(gen)) ,
+									static_cast<int>(robotLocation.y + std::sin( angle) * laserBeamLength + noise(gen))};
 
-				wxPoint currentIntersection = Utils::Shape2DUtils::getIntersection( wallPoint1, wallPoint2, robotLocation, laserEndpoint);
+				wxPoint interSection = Utils::Shape2DUtils::getIntersection( wallPoint1, wallPoint2, robotLocation, laserEndpoint);
 
-				if (currentIntersection != wxDefaultPosition)
+				if(interSection != wxDefaultPosition)
 				{
-					if(intersection == wxDefaultPosition)
-					{
-						intersection = currentIntersection;
-					}else if(Utils::Shape2DUtils::distance(robotLocation,currentIntersection) < Utils::Shape2DUtils::distance(robotLocation,intersection))
-					{
-						intersection = currentIntersection;
-					}
+					double distance = Utils::Shape2DUtils::distance(robotLocation,interSection);
+					return std::make_shared< DistanceStimulus >( angle,distance);
 				}
 			}
-			if(intersection != wxDefaultPosition)
-			{
-				double distance = Utils::Shape2DUtils::distance(robotLocation,intersection);
-				return std::make_shared< DistanceStimulus >( angle,distance);
-			}
+			return std::make_shared< DistanceStimulus >( noAngle,noDistance);
 		}
 		return std::make_shared< DistanceStimulus >( noAngle,noDistance);
 	}
@@ -81,7 +70,7 @@ namespace Model
 			DistanceStimulus* distanceStimulus = dynamic_cast< DistanceStimulus* >( anAbstractStimulus.get());
 			if(distanceStimulus)
 			{
-				if (std::fabs(distanceStimulus->distance - noDistance) <= std::numeric_limits<float>::epsilon())
+				if(distanceStimulus->distance == noDistance)
 				{
 					return std::make_shared<DistancePercept>( wxPoint(noObject,noObject));
 				}

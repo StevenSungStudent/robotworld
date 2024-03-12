@@ -2,21 +2,21 @@
 <cdtprojectproperties>
 <section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.IncludePaths">
 <language name="C++ Source File">
-<includepath>/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2</includepath>
-<includepath>/usr/include/wx-3.2</includepath>
+<includepath>/usr/lib/x86_64-linux-gnu/wx/include/gtk2-unicode-3.0</includepath>
+<includepath>/usr/include/wx-3.0</includepath>
 
 </language>
 <language name="C Source File">
-<includepath>/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2</includepath>
-<includepath>/usr/include/wx-3.2</includepath>
+<includepath>/usr/lib/x86_64-linux-gnu/wx/include/gtk2-unicode-3.0</includepath>
+<includepath>/usr/include/wx-3.0</includepath>
 
 </language>
 <language name="Object File">
 
 </language>
 <language name="Assembly Source File">
-<includepath>/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.2</includepath>
-<includepath>/usr/include/wx-3.2</includepath>
+<includepath>/usr/lib/x86_64-linux-gnu/wx/include/gtk2-unicode-3.0</includepath>
+<includepath>/usr/include/wx-3.0</includepath>
 
 </language>
 </section>

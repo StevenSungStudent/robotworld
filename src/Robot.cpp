@@ -4,6 +4,8 @@
 #include "CommunicationService.hpp"
 #include "Goal.hpp"
 #include "LaserDistanceSensor.hpp"
+#include "Lidar.hpp"
+#include "OdometerCompass.hpp"
 #include "Logger.hpp"
 #include "MainApplication.hpp"
 #include "MathUtils.hpp"
@@ -14,6 +16,8 @@
 #include "Shape2DUtils.hpp"
 #include "Wall.hpp"
 #include "WayPoint.hpp"
+#include "Matrix.hpp"
+#include "OrientationPercept.hpp"
 
 #include <chrono>
 #include <ctime>
@@ -51,8 +55,20 @@ namespace Model
 		std::shared_ptr< AbstractSensor > laserSensor = std::make_shared<LaserDistanceSensor>( *this);
 		attachSensor( laserSensor);
 
+		std::shared_ptr< AbstractSensor > lidar = std::make_shared<Lidar>( *this);
+		attachSensor( lidar);
+
+		std::shared_ptr< AbstractSensor > odometerCompass = std::make_shared<OdometerCompass>( *this);
+		attachSensor( odometerCompass);
+
 		// We use the real position for starters, not an estimated position.
 		startPosition = position;
+//		covarianceMatrix = ;
+		previousPosition.push_back(position);
+		believedPosition.push_back(position);
+		believedValue value = {0, 0, position};
+		believedList.push_back(value);
+		generateParticles(1000);
 	}
 	/**
 	 *
@@ -427,6 +443,7 @@ namespace Model
 	 */
 	void Robot::drive()
 	{
+
 		try
 		{
 			for (std::shared_ptr< AbstractSensor > sensor : sensors)
@@ -447,13 +464,17 @@ namespace Model
 			startPosition = position;
 
 			unsigned pathPoint = 0;
-			while (position.x > 0 && position.x < 500 && position.y > 0 && position.y < 500 && pathPoint < path.size()) // @suppress("Avoid magic numbers")
+			while (position.x > 0 && position.x < 1024 && position.y > 0 && position.y < 1024 && pathPoint < path.size()) // @suppress("Avoid magic numbers")
 			{
+				//NOTE: used to be position
+//				previousPosition.push_back(position);
 				// Do the update
 				const PathAlgorithm::Vertex& vertex = path[pathPoint+=static_cast<unsigned int>(speed)];
 				front = BoundedVector( vertex.asPoint(), position);
 				position.x = vertex.x;
 				position.y = vertex.y;
+
+				previousPosition.push_back(position);
 
 				// Do the measurements / handle all percepts
 				// TODO There are race conditions here:
@@ -472,6 +493,16 @@ namespace Model
 						{
 							DistancePercept* distancePercept = dynamic_cast<DistancePercept*>(percept.value().get());
 							currentRadarPointCloud.push_back(*distancePercept);
+						}else if(typeid(tempAbstractPercept) == typeid(OrientationPercept)){
+							OrientationPercept* orientation = dynamic_cast<OrientationPercept*>(percept.value().get());
+//							calculateBelieve(orientation);
+						}else if(typeid(tempAbstractPercept) == typeid(DistancePercepts)){
+//							std::cout << "recieved" << std::endl;
+							DistancePercepts* distancePercepts = dynamic_cast<DistancePercepts*>(percept.value().get());
+//							for(DistancePercept distancePercept : distancePercepts->pointCloud){
+//								std::cout << distancePercept.point << std::endl;
+							currentLidarPointCloud = distancePercepts->pointCloud;
+//							}
 						}else
 						{
 							Application::Logger::log(std::string("Unknown type of percept:") + typeid(tempAbstractPercept).name());
@@ -483,6 +514,7 @@ namespace Model
 				}
 
 				// Update the belief
+//				calculateBelieve();
 
 				// Stop on arrival or collision
 				if (arrived(goal) || collision())
@@ -583,6 +615,67 @@ namespace Model
 			}
 		}
 		return false;
+	}
+	void Robot::calculateBelieve(OrientationPercept *orientation){
+////		OdometerCompass odometerCompass;
+//		//The state vector contains the angle and distance values of the robot.
+////		OdometerCompass odometerCompass(*this);
+////		OrientationPercept* orientation = dynamic_cast<OrientationPercept*>(odometerCompass.getPerceptFor(odometerCompass.getStimulus()).get());
+//
+////	    Matrix<double, 2, 1>stateVector {(double)believedPosition.back().x, (double)believedPosition.back().y};
+////	    Matrix<double, 2, 2>A { {1, 1}, {0, 1} };
+////	    Matrix<double, 2, 1>B {0.5, 1};
+////	    Matrix<double, 2, 2>I { {1, 0}, {0, 1} };
+////	    Matrix<double, 2, 1>measurement {(double)orientation->point.x, (double)orientation->point.y };
+//
+//	    Matrix<double, 2, 1>stateVector {believedList.back().believedAngle, believedList.back().believedDistance};
+//	    Matrix<double, 2, 2>A { {1, 1}, {0, 1} };
+//	    Matrix<double, 2, 1>B {0.5, 1};
+//	    Matrix<double, 2, 2>I { {1, 0}, {0, 1} };
+//	    Matrix<double, 2, 1>measurement {orientation->angle, orientation->distance};
+//	    Matrix<double, 2, 2>Q{ {0.001218471, 0}, {0, 1} };
+//
+//	    std::cout << std::to_string(orientation->angle) << std::endl;
+////	    auto result =  kalmanFilter(stateVector, covarianceMatrix, A, B, I, measurement, 0.0);
+//	    auto result =  kalmanFilter(stateVector, covarianceMatrix, A, B, I, measurement, 0.0, Q);
+//	    stateVector = result.first;
+//		believedValue value = {stateVector.at(0, 0), stateVector.at(1, 0)};
+//	    believedList.push_back(value);
+//
+////		static_cast< int >( position.x + std::cos( believedList.back().believedAngle)*believedList.back().believedDistance);
+////		static_cast< int >( position.y + std::sin( believedList.back().believedAngle)*believedList.back().believedDistance);
+
+
+		Matrix<double, 2, 1>stateVector {static_cast<double>(believedPosition.back().x), static_cast<double>(believedPosition.back().y)};
+		Matrix<double, 2, 2>A { {1, 1}, {0, 1} };
+		Matrix<double, 2, 1>B { 0.5, 1 };
+		Matrix<double, 2, 2>I { {1, 0}, {0, 1} };
+		Matrix<double, 2, 1>measurement {previousPosition.back().x + std::cos( orientation->angle)* orientation->distance, previousPosition.back().y + std::sin( orientation->angle)* orientation->distance};
+		Matrix<double, 2, 2>Q{ {1, 0}, {0, 1} };
+		Matrix<double, 1, 2>u { {std::cos( orientation->angle)* orientation->distance, std::sin( orientation->angle)* orientation->distance} };
+
+
+		auto result =  kalmanFilter(stateVector, covarianceMatrix, A, B, I, measurement, u, Q);
+		stateVector = result.first;
+//		believedValue value = {stateVector.at(0, 0), stateVector.at(1, 0)};
+//		believedList.push_back(value);
+
+		believedPosition.push_back(wxPoint(stateVector.at(0, 0), stateVector.at(1, 0)));
+//	    believedPosition.push_back(wxPoint(static_cast<int>( believedPosition.back().x + std::cos( believedList.back().believedAngle)*believedList.back().believedDistance), static_cast<int>( believedPosition.back().y + std::sin( believedList.back().believedAngle)*believedList.back().believedDistance)));
+	    covarianceMatrix = result.second;
+	    std::cout << "angle: " + std::to_string(orientation->angle) + " distance: " + std::to_string(orientation->distance) << std::endl;
+	    std::cout << "believedPosition x: " + std::to_string(believedPosition.back().x) + " believedPosition y: " + std::to_string(believedPosition.back().y) << std::endl;
+
+	}
+
+	void Robot::generateParticles(const unsigned long& amount){
+		std::random_device rd{};
+		std::mt19937 gen{rd()};
+	    std::normal_distribution<> value{0, 512};
+
+	    for(unsigned long i = 0; i < amount; ++i){
+	    	particleCloud.push_back(DistancePercept(wxPoint(value(gen), value(gen))));
+	    }
 	}
 
 } // namespace Model

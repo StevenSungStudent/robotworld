@@ -1544,7 +1544,7 @@ Optional Packages:
   --with-sysroot[=DIR]    Search for dependent libraries within DIR (or the
                           compiler's sysroot if not specified).
   --with-cxx=11|14|17|20     (mandatory) use the given C++ dialect
-  --with-boost=DIR        prefix of Boost 1.74 [guess]
+  --with-boost=DIR        prefix of Boost 1.60 [guess]
   --with-boost=path_to_installed_boost     set the path to an installed Boost *not* in the path
   --with-wxdir=PATH       Use uninstalled version of wxWidgets in PATH
   --with-wx-config=CONFIG wx-config script to use (optional)
@@ -18211,17 +18211,17 @@ else
 fi
 
 
+
+
 #########################################################################################################
 #		Compilation target
 #########################################################################################################
-
-
 case $host in
 *linux*)
 		TARGET=linux
 	;;
 *mingw* | *i686-pc-mingw64* | *i686-pc-mingw32* | *i686-pc-msys* | *x86_64-unknown-msys*)
-	if [ "$host" = "$build" ]
+	if  "$host" -eq "$build"
 	then
 		TARGET=mingw
 	else #if [ "$host" != "$build" ]
@@ -18261,7 +18261,7 @@ esac
 
 echo "$as_me: this is boost.m4 serial 38" >&5
 boost_save_IFS=$IFS
-boost_version_req=1.74
+boost_version_req=1.60
 IFS=.
 set x $boost_version_req 0 0 0
 IFS=$boost_save_IFS
@@ -22224,6 +22224,7 @@ BOOST_LDFLAGS+="$BOOST_CHRONO_LDFLAGS"
 # using tr, resplit (i.e. concatinate) again on '\n'
 # the grep is due to a boost.M4 problem that generates spurious stuff
 BOOST_LDFLAGS=$(echo $BOOST_LDFLAGS | tr ' ' '\n' | sort -u | grep -oh "\w*-[[:print:]]*\w*" | tr '\n' ' ')
+
 
 
 case $host in

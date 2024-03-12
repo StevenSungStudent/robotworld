@@ -93,6 +93,8 @@ namespace View
 		drawRobot( dc);
 
 		drawLaser( dc);
+
+		drawLidar( dc);
 	}
 	/**
 	 *
@@ -256,6 +258,48 @@ namespace View
 			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject))
 			{
 				dc.SetPen( wxPen(  "RED", borderWidth, wxPENSTYLE_SOLID));
+				dc.DrawCircle( d.point, 1);
+			}
+		}
+		//TODO: Make this its own function
+		for(unsigned i = 0; i < getRobot()->believedPosition.size(); ++i){
+			dc.DrawCircle(getRobot()->believedPosition.at(i), 2);
+		}
+	}
+
+	void RobotShape::drawLidar( wxDC& dc)
+	{
+		double angle = Utils::Shape2DUtils::getAngle( getRobot()->getFront());
+
+		// Draw the laser beam
+		dc.SetPen( wxPen(  "BLUE", 1, wxPENSTYLE_SOLID));
+//		dc.DrawLine( centre.x, centre.y, static_cast< int >( centre.x + std::cos( angle) * Model::laserBeamLength), static_cast< int >( centre.y + std::sin( angle) * Model::laserBeamLength));
+//		std::cout << "sfhslkdjfkldslfdsdkl" << std::endl;
+		// Draw the radar endPoints that are actually touching the walls
+
+		for (const Model::DistancePercept &d : getRobot()->currentLidarPointCloud)
+		{
+//			std::cout << "whaaaaaaaaaaat" << std::endl;
+			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject))
+			{
+				dc.DrawLine( centre.x, centre.y,centre.x + d.point.x, centre.y + d.point.y);
+				dc.SetPen( wxPen(  "BLUE", borderWidth, wxPENSTYLE_SOLID));
+			}
+		}
+//		for(unsigned i = 0; i < getRobot()->believedPosition.size(); ++i){
+//			dc.DrawCircle(getRobot()->believedPosition.at(i), 2);
+//		}
+	}
+
+	void RobotShape::drawParticles( wxDC& dc)
+	{
+		double angle = Utils::Shape2DUtils::getAngle( getRobot()->getFront());
+
+		// Draw the radar endPoints that are actually touching the walls
+		for (const Model::DistancePercept &d : getRobot()->particleCloud)
+		{
+			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject))
+			{
 				dc.DrawCircle( d.point, 1);
 			}
 		}
