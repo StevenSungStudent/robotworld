@@ -10,8 +10,11 @@
 #include "RobotWorldCanvas.hpp"
 #include "Shape2DUtils.hpp"
 #include "Trace.hpp"
+#include "DistancePercepts.hpp"
 
 #include <cmath>
+#include <iostream>
+#include <vector>
 
 namespace View
 {
@@ -95,6 +98,8 @@ namespace View
 		drawLaser( dc);
 
 		drawLidar( dc);
+
+		drawParticles( dc);
 	}
 	/**
 	 *
@@ -293,14 +298,19 @@ namespace View
 
 	void RobotShape::drawParticles( wxDC& dc)
 	{
-		double angle = Utils::Shape2DUtils::getAngle( getRobot()->getFront());
-
-		// Draw the radar endPoints that are actually touching the walls
-		for (const Model::DistancePercept &d : getRobot()->particleCloud)
+		for (unsigned long i = 0; i < getRobot()->particleFilter.getParticleCloud().size(); ++i)
 		{
-			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject))
+			Particle particle = getRobot()->particleFilter.getParticleCloud().at(i);
+			if (particle.position != wxDefaultPosition || (particle.position.x != Model::noObject && particle.position.y != Model::noObject))
 			{
-				dc.DrawCircle( d.point, 1);
+//				std::cout << particle.pointCloud.size() << std::endl;
+				dc.DrawCircle(particle.position, 1);
+				for(const Model::DistancePercept particlePoint : particle.pointCloud){
+					std::cout << "current point: "<< particle.position << " intersect: " << particlePoint.point << std::endl;
+					dc.DrawCircle(particlePoint.point, 1);
+					dc.SetPen( wxPen(  "RED", borderWidth, wxPENSTYLE_SOLID));
+				}
+
 			}
 		}
 	}

@@ -7,6 +7,7 @@
 #include "WayPoint.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 namespace Model
 {
