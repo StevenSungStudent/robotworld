@@ -9,15 +9,18 @@
 #define SRC_PARTICLE_HPP_
 
 #include "Shape2DUtils.hpp"
+#include "DistancePercepts.hpp"
 
 
 class Particle {
 public:
-	Particle();
+	Particle(const wxPoint &aPostion, const double &aWeight);
 	virtual ~Particle();
 
 	wxPoint position;
 	double weight;
+
+	Model::PointCloud pointCloud;
 
 	/**
 	 * Returns a 1-line description of the object

@@ -8,7 +8,7 @@
 #include "Particle.hpp"
 #include <sstream>
 
-Particle::Particle() : position(wxPoint(0,0)), weight(0) {
+Particle::Particle(const wxPoint &aPosition, const double &aWeight) : position(aPosition), weight(aWeight) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -25,5 +25,4 @@ std::string Particle::asString() const
 	std::stringstream result;
 	result << "position x: " << position.x  << " position y: " << position.y << " weight: " << weight;
 	return result.str();
-//	return "";
 }

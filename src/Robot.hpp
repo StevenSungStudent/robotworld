@@ -15,6 +15,7 @@
 #include "Size.hpp"
 #include "Matrix.hpp"
 #include "OrientationPercept.hpp"
+#include "ParticleFilter.hpp"
 
 #include <utility>
 #include <iostream>
@@ -294,7 +295,7 @@ namespace Model
 			//@}
 
 			// particle filter
-			PointCloud particleCloud;
+			ParticleFilter particleFilter;
 			//@}
 
 		protected:
@@ -321,7 +322,7 @@ namespace Model
 			/**
 			 *
 			 */
-			void generateParticles(const unsigned long& amount);
+//			void generateParticles(const unsigned long& amount);
 
 
 		private:

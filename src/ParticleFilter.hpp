@@ -9,6 +9,10 @@
 #define SRC_PARTICLEFILTER_HPP_
 
 #include "Particle.hpp"
+#include "DistancePercepts.hpp"
+#include "RobotWorld.hpp"
+#include "Wall.hpp"
+
 #include <vector>
 #include <random>
 
@@ -21,8 +25,15 @@ namespace Model{
 
 		void generateParticles(const unsigned long& amount);
 
+		void updateParticles();
+
+		const std::vector<Particle>& getParticleCloud() const {
+			return particleCloud;
+		}
+
 	private:
-		std::vector<Particle> pointcloud;
+		std::vector<Particle> particleCloud;
+		const short int lidarBeamLength = 1024;
 
 	};
 }

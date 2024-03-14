@@ -68,7 +68,8 @@ namespace Model
 		believedPosition.push_back(position);
 		believedValue value = {0, 0, position};
 		believedList.push_back(value);
-		generateParticles(1000);
+		particleFilter.generateParticles(100);
+//		particleFilter.updateParticles();
 	}
 	/**
 	 *
@@ -502,6 +503,7 @@ namespace Model
 //							for(DistancePercept distancePercept : distancePercepts->pointCloud){
 //								std::cout << distancePercept.point << std::endl;
 							currentLidarPointCloud = distancePercepts->pointCloud;
+							particleFilter.updateParticles();
 //							}
 						}else
 						{
@@ -663,19 +665,19 @@ namespace Model
 		believedPosition.push_back(wxPoint(stateVector.at(0, 0), stateVector.at(1, 0)));
 //	    believedPosition.push_back(wxPoint(static_cast<int>( believedPosition.back().x + std::cos( believedList.back().believedAngle)*believedList.back().believedDistance), static_cast<int>( believedPosition.back().y + std::sin( believedList.back().believedAngle)*believedList.back().believedDistance)));
 	    covarianceMatrix = result.second;
-	    std::cout << "angle: " + std::to_string(orientation->angle) + " distance: " + std::to_string(orientation->distance) << std::endl;
+//	    std::cout << "angle: " + std::to_string(orientation->angle) + " distance: " + std::to_string(orientation->distance) << std::endl;
 	    std::cout << "believedPosition x: " + std::to_string(believedPosition.back().x) + " believedPosition y: " + std::to_string(believedPosition.back().y) << std::endl;
 
 	}
 
-	void Robot::generateParticles(const unsigned long& amount){
-		std::random_device rd{};
-		std::mt19937 gen{rd()};
-	    std::normal_distribution<> value{0, 512};
-
-	    for(unsigned long i = 0; i < amount; ++i){
-	    	particleCloud.push_back(DistancePercept(wxPoint(value(gen), value(gen))));
-	    }
-	}
+//	void Robot::generateParticles(const unsigned long& amount){
+//		std::random_device rd{};
+//		std::mt19937 gen{rd()};
+//	    std::normal_distribution<> value{0, 512};
+//
+//	    for(unsigned long i = 0; i < amount; ++i){
+//	    	particleCloud.push_back(DistancePercept(wxPoint(value(gen), value(gen))));
+//	    }
+//	}
 
 } // namespace Model
