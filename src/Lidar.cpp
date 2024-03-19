@@ -70,8 +70,8 @@ std::shared_ptr<AbstractStimulus> Lidar::getStimulus() const {
 				distanceStimuli.stimuli.push_back(
 						DistanceStimulus(angle, noDistance));
 			} else {
-				std::cout << "angle: " << angle << " distance: " << distance
-						<< std::endl;
+//				std::cout << "angle: " << angle << " distance: " << distance
+//						<< std::endl;
 				distanceStimuli.stimuli.push_back(
 						DistanceStimulus(angle, distance + noise(gen)));
 			}
@@ -101,7 +101,7 @@ std::shared_ptr<AbstractPercept> Lidar::getPerceptFor(std::shared_ptr<
 									* distanceStimulus.distance),
 							static_cast<int>(std::sin(distanceStimulus.angle)
 									* distanceStimulus.distance) };
-					std::cout << endpoint << std::endl;
+//					std::cout << endpoint << std::endl;
 					distancePercepts.pointCloud.push_back(
 							DistancePercept(endpoint));
 				}
