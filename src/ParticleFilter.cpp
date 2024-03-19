@@ -6,12 +6,11 @@
  */
 
 #include "ParticleFilter.hpp"
-
+#include "Robot.hpp"
 #include <iostream>
 
 Model::ParticleFilter::ParticleFilter() {
 	// TODO Auto-generated constructor stub
-
 }
 
 Model::ParticleFilter::~ParticleFilter() {
@@ -29,6 +28,7 @@ void Model::ParticleFilter::generateParticles(const unsigned long &amount) {
 }
 
 void Model::ParticleFilter::updateParticles() {
+	moveParticles();
 	for (unsigned long i = 0; i < particleCloud.size(); ++i) {
 		particleCloud.at(i).pointCloud.clear();
 		wxPoint currentPosition = particleCloud.at(i).position;
@@ -45,10 +45,33 @@ void Model::ParticleFilter::updateParticles() {
 
 				wxPoint interSection = Utils::Shape2DUtils::getIntersection( wallPoint1, wallPoint2, currentPosition, laserEndpoint);
 				if (interSection != wxDefaultPosition) {
-//					std::cout << "current point: "<< currentPosition << " intersect: " << interSection << std::endl;
 					particleCloud.at(i).pointCloud.push_back(DistancePercept(interSection));
 				}
 			}
+		}
+	}
+//	calculateWeight();
+}
+
+void Model::ParticleFilter::moveParticles(){
+	Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+	if(robot){
+		wxPoint currentPosition = robot->getPosition();
+		wxPoint previousPosition = robot->getPreviousPosition();
+		wxPoint difference = currentPosition - previousPosition;
+		for(unsigned long i = 0; i < particleCloud.size(); ++i){
+			particleCloud.at(i).position += difference;
+		}
+	}
+
+}
+
+void Model::ParticleFilter::calculateWeight(){
+	Model::RobotPtr robot = Model::RobotWorld::getRobotWorld().getRobot( "Robot");
+	for(Particle particle : particleCloud){
+		particle.weight = 0;
+		for(unsigned long i = 0; i < particle.pointCloud.size(); ++i){
+			particle.weight += std::abs(Utils::Shape2DUtils::distance(robot->currentLidarPointCloud.at(i).point, particle.pointCloud.at(i).point));
 		}
 	}
 }

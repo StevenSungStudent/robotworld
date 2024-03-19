@@ -666,7 +666,7 @@ namespace Model
 //	    believedPosition.push_back(wxPoint(static_cast<int>( believedPosition.back().x + std::cos( believedList.back().believedAngle)*believedList.back().believedDistance), static_cast<int>( believedPosition.back().y + std::sin( believedList.back().believedAngle)*believedList.back().believedDistance)));
 	    covarianceMatrix = result.second;
 //	    std::cout << "angle: " + std::to_string(orientation->angle) + " distance: " + std::to_string(orientation->distance) << std::endl;
-	    std::cout << "believedPosition x: " + std::to_string(believedPosition.back().x) + " believedPosition y: " + std::to_string(believedPosition.back().y) << std::endl;
+//	    std::cout << "believedPosition x: " + std::to_string(believedPosition.back().x) + " believedPosition y: " + std::to_string(believedPosition.back().y) << std::endl;
 
 	}
 

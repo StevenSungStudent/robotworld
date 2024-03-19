@@ -303,10 +303,9 @@ namespace View
 			Particle particle = getRobot()->particleFilter.getParticleCloud().at(i);
 			if (particle.position != wxDefaultPosition || (particle.position.x != Model::noObject && particle.position.y != Model::noObject))
 			{
-//				std::cout << particle.pointCloud.size() << std::endl;
 				dc.DrawCircle(particle.position, 1);
 				for(const Model::DistancePercept particlePoint : particle.pointCloud){
-					std::cout << "current point: "<< particle.position << " intersect: " << particlePoint.point << std::endl;
+//					std::cout << "current point: "<< particle.position << " intersect: " << particlePoint.point << std::endl;
 					dc.DrawCircle(particlePoint.point, 1);
 					dc.SetPen( wxPen(  "RED", borderWidth, wxPENSTYLE_SOLID));
 				}

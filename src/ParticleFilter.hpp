@@ -35,6 +35,9 @@ namespace Model{
 		std::vector<Particle> particleCloud;
 		const short int lidarBeamLength = 1024;
 
+		void moveParticles();
+		void calculateWeight();
+
 	};
 }
 
