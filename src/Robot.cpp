@@ -66,6 +66,9 @@ namespace Model
 //		covarianceMatrix = ;
 		previousPosition.push_back(position);
 		believedPosition.push_back(position);
+
+//		stateVector.push_back({osition.x, position.y);
+
 		believedValue value = {0, 0, position};
 		believedList.push_back(value);
 		particleFilter.generateParticles(500);
@@ -496,7 +499,7 @@ namespace Model
 							currentRadarPointCloud.push_back(*distancePercept);
 						}else if(typeid(tempAbstractPercept) == typeid(OrientationPercept)){
 							OrientationPercept* orientation = dynamic_cast<OrientationPercept*>(percept.value().get());
-//							calculateBelieve(orientation);
+							calculateBelieve(orientation);
 						}else if(typeid(tempAbstractPercept) == typeid(DistancePercepts)){
 //							std::cout << "recieved" << std::endl;
 							DistancePercepts* distancePercepts = dynamic_cast<DistancePercepts*>(percept.value().get());
@@ -528,7 +531,7 @@ namespace Model
 				notifyObservers();
 
 				// If there is no sleep_for here the robot will immediately be on its destination....
-				std::this_thread::sleep_for( std::chrono::milliseconds( 100)); // @suppress("Avoid magic numbers")
+				std::this_thread::sleep_for( std::chrono::milliseconds( 500)); // @suppress("Avoid magic numbers")
 
 				// this should be the last thing in the loop
 				if(driving == false)
@@ -649,12 +652,23 @@ namespace Model
 
 
 		Matrix<double, 2, 1>stateVector {static_cast<double>(believedPosition.back().x), static_cast<double>(believedPosition.back().y)};
-		Matrix<double, 2, 2>A { {1, 1}, {0, 1} };
-		Matrix<double, 2, 1>B { 0.5, 1 };
-		Matrix<double, 2, 2>I { {1, 0}, {0, 1} };
+		Matrix<double, 2, 2>A { {1.0, 0.0},
+								{0.0, 1.0} };
+
+		Matrix<double, 2, 2>B { {1.0, 0.0},
+								{0.0, 1.0} };
+
+		Matrix<double, 2, 2>I { {1.0, 0.0},
+								{0.0, 1.0}
+								};
+
 		Matrix<double, 2, 1>measurement {previousPosition.back().x + std::cos( orientation->angle)* orientation->distance, previousPosition.back().y + std::sin( orientation->angle)* orientation->distance};
-		Matrix<double, 2, 2>Q{ {1, 0}, {0, 1} };
-		Matrix<double, 1, 2>u { {std::cos( orientation->angle)* orientation->distance, std::sin( orientation->angle)* orientation->distance} };
+
+		Matrix<double, 2, 2>Q{ 	{1.0, 0.0},
+								{0.0, 1.0} };
+
+		Matrix<double, 2, 1>u { {{ std::cos( orientation->angle)* orientation->distance }}, {{ std::sin( orientation->angle)* orientation->distance }} };
+
 
 
 		auto result =  kalmanFilter(stateVector, covarianceMatrix, A, B, I, measurement, u, Q);

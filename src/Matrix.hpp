@@ -267,10 +267,10 @@ bool equals(const Matrix< T, M, N>& lhs,
 			const T aPrecision = std::numeric_limits<T>::epsilon(),
 			const unsigned long aFactor = 1);
 
-template< class T, std::size_t M, std::size_t N >
-Matrix< T, M, N > determinePredictedStateVector(Matrix< T, M, M > A, Matrix< T, M, N > stateVector, Matrix< T, M, N > B, Matrix< T, N, M > u ){
+template< class T, std::size_t M, std::size_t N>
+Matrix< T, M, N > determinePredictedStateVector(Matrix< T, M, M > A, Matrix< T, M, N > stateVector, Matrix< T, M, M > B, Matrix< T, M, N > u ){
 	Matrix< T, M, N > result;
-//	result = (A * stateVector) + (B * u); TODO:FIX
+	result = (A * stateVector) + (B * u); //TODO:FIX
 	return (result);
 }
 
@@ -313,7 +313,7 @@ Matrix< T, M, N > determineMeasurementVector(Matrix< T, M, N > C, Matrix< T, M, 
 }
 
 template< class T, std::size_t M, std::size_t N>
-std::pair<Matrix< T, M, N >, Matrix< T, M, M >> kalmanFilter(Matrix<T, M, N>stateVector, Matrix<T, M, M>processCovarianceMatrix, Matrix<T, M, M>A, Matrix<T, M, N>B, Matrix<T, M, M>I, Matrix<T, M , N> measurement, Matrix<T, N, M> u, Matrix<T, M, M> Q){
+std::pair<Matrix< T, M, N >, Matrix< T, M, M >> kalmanFilter(Matrix<T, M, N>stateVector, Matrix<T, M, M>processCovarianceMatrix, Matrix<T, M, M>A, Matrix<T, M, M>B, Matrix<T, M, M>I, Matrix<T, M , N> measurement, Matrix<T, M, N> u, Matrix<T, M, M> Q){
 	Matrix< T, M, N > predictedStateVector = determinePredictedStateVector(A, stateVector, B, u);
 	Matrix< T, M, M > predictedCovarianceMatrix = determinePredictedProcessCovarianceMatrix(A, processCovarianceMatrix, A.transpose());
 
