@@ -37,6 +37,7 @@ namespace Model{
 
 		void moveParticles();
 		void calculateWeight();
+		void resample();
 
 	};
 }
