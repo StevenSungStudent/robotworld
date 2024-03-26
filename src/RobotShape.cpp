@@ -288,7 +288,7 @@ namespace View
 			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject))
 			{
 				dc.DrawLine( centre.x, centre.y,centre.x + d.point.x, centre.y + d.point.y);
-				dc.SetPen( wxPen(  "YELLOW", borderWidth, wxPENSTYLE_SOLID));
+				dc.SetPen( wxPen(  "Y", borderWidth, wxPENSTYLE_SOLID));
 			}
 		}
 //		for(unsigned i = 0; i < getRobot()->believedPosition.size(); ++i){

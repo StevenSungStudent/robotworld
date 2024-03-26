@@ -71,6 +71,8 @@ namespace Model
 			 */
 			std::vector<wxPoint> believedPosition;
 
+//			std::vector<Matrix<double, 2, 1>> stateVector;
+
 			/**
 			 *
 			 */
