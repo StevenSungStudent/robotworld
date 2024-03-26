@@ -50,30 +50,21 @@ std::shared_ptr<AbstractStimulus> Lidar::getStimulus() const {
 				wxPoint wallPoint2 = wall->getPoint2();
 				wxPoint robotLocation = robot->getPosition();
 
-				wxPoint laserEndpoint { static_cast<int>(robotLocation.x
-						+ std::cos(angle) * lidarBeamLength),
-						static_cast<int>(robotLocation.y
-								+ std::sin(angle) * lidarBeamLength) };
+				wxPoint laserEndpoint { static_cast<int>(robotLocation.x + std::cos(angle) * lidarBeamLength), static_cast<int>(robotLocation.y + std::sin(angle) * lidarBeamLength) };
 
-				wxPoint interSection = Utils::Shape2DUtils::getIntersection(
-						wallPoint1, wallPoint2, robotLocation, laserEndpoint);
+				wxPoint interSection = Utils::Shape2DUtils::getIntersection(wallPoint1, wallPoint2, robotLocation, laserEndpoint);
 
 				if (interSection != wxDefaultPosition) {
-					double temp = Utils::Shape2DUtils::distance(robotLocation,
-							interSection);
+					double temp = Utils::Shape2DUtils::distance(robotLocation, interSection);
 					if (temp < distance || distance == noDistance) {
 						distance = temp;
 					}
 				}
 			}
 			if (distance == noDistance) {
-				distanceStimuli.stimuli.push_back(
-						DistanceStimulus(angle, noDistance));
+				distanceStimuli.stimuli.push_back(DistanceStimulus(angle, noDistance));
 			} else {
-//				std::cout << "angle: " << angle << " distance: " << distance
-//						<< std::endl;
-				distanceStimuli.stimuli.push_back(
-						DistanceStimulus(angle, distance + noise(gen)));
+				distanceStimuli.stimuli.push_back(DistanceStimulus(angle, distance + noise(gen)));
 			}
 		}
 		return (std::make_shared<DistanceStimuli>(distanceStimuli));
@@ -89,29 +80,23 @@ std::shared_ptr<AbstractPercept> Lidar::getPerceptFor(std::shared_ptr<
 	if (robot) {
 		wxPoint robotLocation = robot->getPosition();
 
-		DistanceStimuli *distanceStimuli =
-				dynamic_cast<DistanceStimuli*>(anAbstractStimulus.get());
+		DistanceStimuli *distanceStimuli = dynamic_cast<DistanceStimuli*>(anAbstractStimulus.get());
 		if (distanceStimuli) {
 			DistancePercepts distancePercepts;
 
 			for (DistanceStimulus distanceStimulus : distanceStimuli->stimuli) {
 				if (distanceStimulus.distance != noDistance) {
-					wxPoint endpoint {
-							static_cast<int>(std::cos(distanceStimulus.angle)
-									* distanceStimulus.distance),
-							static_cast<int>(std::sin(distanceStimulus.angle)
-									* distanceStimulus.distance) };
-//					std::cout << endpoint << std::endl;
-					distancePercepts.pointCloud.push_back(
-							DistancePercept(endpoint));
+					wxPoint endpoint { static_cast<int>(std::cos(distanceStimulus.angle) * distanceStimulus.distance), static_cast<int>(std::sin(distanceStimulus.angle) * distanceStimulus.distance) };
+					distancePercepts.pointCloud.push_back(DistancePercept(endpoint));
+				}else{
+					distancePercepts.pointCloud.push_back(DistancePercept(wxPoint(noDistance, noDistance)));
 				}
 			}
 			return (std::make_shared<DistancePercepts>(distancePercepts));
 		}
 	}
 
-	return std::make_shared<DistancePercept>(
-			wxPoint(invalidDistance, invalidDistance));
+	return std::make_shared<DistancePercept>(wxPoint(invalidDistance, invalidDistance));
 }
 /**
  *
