@@ -8,24 +8,29 @@
 #ifndef SRC_PARTICLE_HPP_
 #define SRC_PARTICLE_HPP_
 
-#include "Shape2DUtils.hpp"
 #include "DistancePercepts.hpp"
+#include "Wall.hpp"
+#include "Shape2DUtils.hpp"
+#include <vector>
 
+namespace Model{
+	class Particle {
+	public:
+		Particle(const wxPoint &aPostion, const double &aWeight);
+		virtual ~Particle();
 
-class Particle {
-public:
-	Particle(const wxPoint &aPostion, const double &aWeight);
-	virtual ~Particle();
+		wxPoint position;
+		double weight;
 
-	wxPoint position;
-	double weight;
+		PointCloud pointCloud;
 
-	Model::PointCloud pointCloud;
+		void generatePointCloud();
 
-	/**
-	 * Returns a 1-line description of the object
-	 */
-	virtual std::string asString() const;
-};
+		/**
+		 * Returns a 1-line description of the object
+		 */
+		virtual std::string asString() const;
+	};
+}
 
 #endif /* SRC_PARTICLE_HPP_ */

@@ -36,7 +36,6 @@ namespace Model{
 		const short int lidarBeamLength = 1024;
 
 		void moveParticles();
-		void calculateWeight();
 		void resample();
 
 	};

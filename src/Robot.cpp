@@ -68,7 +68,7 @@ namespace Model
 		believedPosition.push_back(position);
 		believedValue value = {0, 0, position};
 		believedList.push_back(value);
-		particleFilter.generateParticles(100);
+		particleFilter.generateParticles(500);
 //		particleFilter.updateParticles();
 	}
 	/**
