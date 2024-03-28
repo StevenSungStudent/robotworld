@@ -39,12 +39,6 @@ namespace Model
 	class Goal;
 	typedef std::shared_ptr< Goal > GoalPtr;
 
-	struct believedValue{
-		double believedAngle;
-		double believedDistance;
-		wxPoint believedPoint;
-	};
-
 	/**
 	 *
 	 */
@@ -71,12 +65,6 @@ namespace Model
 			 */
 			std::vector<wxPoint> believedPosition;
 
-//			std::vector<Matrix<double, 2, 1>> stateVector;
-
-			/**
-			 *
-			 */
-			std::vector<believedValue> believedList;
 			/**
 			 *
 			 */
@@ -112,18 +100,9 @@ namespace Model
 
 			wxPoint getPreviousPosition() const
 			{
-				return (previousPosition.at(previousPosition.size() - 2));
+				return (positionVector.at(positionVector.size() - 2));
 			}
 
-			wxPoint getBelievedPosition() const
-			{
-				return (believedPosition.back());
-			}
-
-			wxPoint getBelievedPreviousPosition() const
-			{
-				return (believedPosition.at(believedPosition.size() - 2));
-			}
 			/**
 			 *
 			 */
@@ -324,16 +303,13 @@ namespace Model
 			/**
 			 *
 			 */
-//			void generateParticles(const unsigned long& amount);
-
 
 		private:
 			/**
 			 *
 			 */
-//			Matrix<double, 2, 2> covarianceMatrix { {0.0349066^2, 0}, {0, 0.1* 30} };
-			Matrix<double, 2, 2> covarianceMatrix { {0.001218471, 0}, {0, 1} };
-//			Matrix<double, 2, 2> covarianceMatrix { {1	, 0}, {0, 1} };
+			Matrix<double, 2, 2> covarianceMatrix { {1, 0}, {0, 1} };
+
 			/**
 			 *
 			 */
@@ -349,7 +325,7 @@ namespace Model
 			/**
 			 *
 			 */
-			std::vector<wxPoint> previousPosition;
+			std::vector<wxPoint> positionVector;
 			/**
 			 *
 			 */
