@@ -318,7 +318,6 @@ std::pair<Matrix< T, M, N >, Matrix< T, M, M >> kalmanFilter(Matrix<T, M, N>stat
 	Matrix< T, M, M > predictedCovarianceMatrix = determinePredictedProcessCovarianceMatrix(A, processCovarianceMatrix, A.transpose());
 
     Matrix<T, M, M>C = predictedCovarianceMatrix.identity();
-//    Matrix<T, M, M>Q{ {0.001218471, 0}, {0, 10} };
 
 	Matrix< T, M, M > kalmanGain = determineKalmanGain(predictedCovarianceMatrix, Q, I, I.transpose());
 	std::cout << kalmanGain << std::endl;

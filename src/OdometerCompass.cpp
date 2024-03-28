@@ -13,90 +13,72 @@
 #include "Shape2DUtils.hpp"
 #include "MathUtils.hpp"
 
-namespace Model
-{
+namespace Model {
 	/**
 	 *
 	 */
-	/* static */ double OdometerCompass::stddevCompass = 0.0349066;// 2 degrees
-	/* static */ double OdometerCompass::stddevOdometer = 1;
+	/* static */double OdometerCompass::stddevCompass = 0.0349066; // 2 degrees
+	/* static */double OdometerCompass::stddevOdometer = 1;
 	/**
 	 *
 	 */
-	OdometerCompass::OdometerCompass( Robot& aRobot) :
-								AbstractSensor( aRobot)
-	{
+	OdometerCompass::OdometerCompass(Robot &aRobot) :
+			AbstractSensor(aRobot) {
 	}
 	/**
 	 *
 	 */
-	std::shared_ptr< AbstractStimulus > OdometerCompass::getStimulus() const
-	{
-		Robot* robot = dynamic_cast<Robot*>(agent);
-		if(robot)
-		{
-			std::random_device rd{};
-			std::mt19937 gen{rd()};
-		    std::normal_distribution<> compassError{0,OdometerCompass::stddevCompass};
-		    std::normal_distribution<> odometerError{0,OdometerCompass::stddevOdometer};
+	std::shared_ptr<AbstractStimulus> OdometerCompass::getStimulus() const {
+		Robot *robot = dynamic_cast<Robot*>(agent);
+		if (robot) {
+			std::random_device rd { };
+			std::mt19937 gen { rd() };
+			std::normal_distribution<> compassError { 0, OdometerCompass::stddevCompass };
+			std::normal_distribution<> odometerError { 0, OdometerCompass::stddevOdometer };
 
-			double angle = Utils::Shape2DUtils::getAngle( robot->getFront()) + compassError(gen);
+			double angle = Utils::Shape2DUtils::getAngle(robot->getFront()) + compassError(gen);
 
 			wxPoint robotLocation = robot->getPosition();
 			wxPoint robotPreviousLocation = robot->getPreviousPosition();
 			double odometerNoise = odometerError(gen);
-//			std::cout << "current location" << robotLocation << std::endl;
-//			std::cout << "previous location" << robotPreviousLocation << std::endl;
 
-			double distance = Utils::Shape2DUtils::distance(robotLocation,robotPreviousLocation) + odometerNoise;
-//			std::cout << "distance: " << distance << "noise: " << odometerNoise << std::endl;
+			double distance = Utils::Shape2DUtils::distance(robotLocation, robotPreviousLocation) + odometerNoise;
 
-			return (std::make_shared< DistanceStimulus >( angle,distance));
+			return (std::make_shared<DistanceStimulus>(angle, distance));
 		}
-		return (std::make_shared< DistanceStimulus >( noAngle,noDistance));
+		return (std::make_shared<DistanceStimulus>(noAngle, noDistance));
 	}
 	/**
 	 *
 	 */
-	std::shared_ptr< AbstractPercept > OdometerCompass::getPerceptFor( std::shared_ptr< AbstractStimulus > anAbstractStimulus) const
-	{
-		Robot* robot = dynamic_cast< Robot* >( agent);
-		if (robot)
-		{
-			//This changed, it used to be getPosition()
-//			wxPoint robotLocation = robot->getBelievedPosition();
+	std::shared_ptr<AbstractPercept> OdometerCompass::getPerceptFor(std::shared_ptr<AbstractStimulus> anAbstractStimulus) const {
+		Robot *robot = dynamic_cast<Robot*>(agent);
+		if (robot) {
 			wxPoint robotLocation = robot->getPreviousPosition();
 
-			DistanceStimulus* distanceStimulus = dynamic_cast< DistanceStimulus* >( anAbstractStimulus.get());
-			if(distanceStimulus)
-			{
-				if(distanceStimulus->distance == noDistance)
-				{
-					return (std::make_shared<OrientationPercept>( invalidDistance, invalidDistance, wxPoint(invalidDistance, invalidDistance)));
+			DistanceStimulus *distanceStimulus = dynamic_cast<DistanceStimulus*>(anAbstractStimulus.get());
+			if (distanceStimulus) {
+				if (distanceStimulus->distance == noDistance) {
+					return (std::make_shared<OrientationPercept>(invalidDistance, invalidDistance, wxPoint(invalidDistance, invalidDistance)));
 				}
-				wxPoint endpoint{	static_cast< int >( robotLocation.x + std::cos( distanceStimulus->angle)*distanceStimulus->distance),
-								static_cast< int >( robotLocation.y + std::sin( distanceStimulus->angle)*distanceStimulus->distance)};
+				wxPoint endpoint { static_cast<int>(robotLocation.x + std::cos(distanceStimulus->angle) * distanceStimulus->distance), static_cast<int>(robotLocation.y + std::sin(distanceStimulus->angle) * distanceStimulus->distance) };
 
-//				std::cout << "distance: " << distanceStimulus->distance << " point: " << endpoint << std::endl;
-
-				return (std::make_shared<OrientationPercept>( (double)distanceStimulus->angle, (double)distanceStimulus->distance, endpoint));
+				return (std::make_shared<OrientationPercept>((double) distanceStimulus->angle, (double) distanceStimulus->distance, endpoint));
 			}
 		}
 
-		return (std::make_shared<OrientationPercept>( invalidDistance, invalidDistance, wxPoint(invalidDistance, invalidDistance)));
+		return (std::make_shared<OrientationPercept>(invalidDistance, invalidDistance, wxPoint(invalidDistance, invalidDistance)));
 	}
 	/**
 	 *
 	 */
-	std::string OdometerCompass::asString() const
-	{
+	std::string OdometerCompass::asString() const {
 		return "OdometerCompass";
 	}
 	/**
 	 *
 	 */
-	std::string OdometerCompass::asDebugString() const
-	{
+	std::string OdometerCompass::asDebugString() const {
 		return asString();
 	}
 } // namespace Model

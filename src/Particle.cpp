@@ -13,12 +13,11 @@
 namespace Model {
 	Particle::Particle(const wxPoint &aPosition, const double &aWeight) :
 			position(aPosition), weight(aWeight) {
-		// TODO Auto-generated constructor stub
 
 	}
 
 	Particle::~Particle() {
-		// TODO Auto-generated destructor stub
+
 	}
 
 	void Particle::generatePointCloud() {
