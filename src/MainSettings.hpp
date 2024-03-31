@@ -63,6 +63,22 @@ namespace Application {
 			return odometerError;
 		}
 
+		bool isKalmanActive() const {
+			return kalmanActive;
+		}
+
+		void setKalmanActive(bool kalmanActive) {
+			this->kalmanActive = kalmanActive;
+		}
+
+		bool isParticleFilterActive() const {
+			return particleFilterActive;
+		}
+
+		void setParticleFilterActive(bool particleFilterActive) {
+			this->particleFilterActive = particleFilterActive;
+		}
+
 	private:
 		bool drawOpenSet;
 		unsigned long speed;
@@ -71,6 +87,9 @@ namespace Application {
 		double odometerError;
 		double lidarError;
 		double lidarDegrees;
+
+		bool kalmanActive;
+		bool particleFilterActive;
 
 		void readConfiguration(const std::string &fileName);
 	};
