@@ -11,124 +11,110 @@
 #include "Shape2DUtils.hpp"
 #include "Trace.hpp"
 #include "DistancePercepts.hpp"
+#include "MainSettings.hpp"
 
 #include <cmath>
 #include <iostream>
 #include <vector>
 
-namespace View
-{
+namespace View {
 	/**
 	 *
 	 */
-	RobotShape::RobotShape( Model::RobotPtr aRobot) :
-								RectangleShape( std::dynamic_pointer_cast<Model::ModelObject>(aRobot), aRobot->getPosition(), aRobot->getName()),
-								robotWorldCanvas(nullptr)
-	{
+	RobotShape::RobotShape(Model::RobotPtr aRobot) :
+			RectangleShape(std::dynamic_pointer_cast<Model::ModelObject>(aRobot), aRobot->getPosition(), aRobot->getName()), robotWorldCanvas(nullptr) {
 	}
 	/**
 	 *
 	 */
-	Model::RobotPtr RobotShape::getRobot() const
-	{
+	Model::RobotPtr RobotShape::getRobot() const {
 		return std::dynamic_pointer_cast<Model::Robot>(getModelObject());
 	}
 	/**
 	 *
 	 */
 	// cppcheck-suppress unusedFunction
-	void RobotShape::setRobot( Model::RobotPtr aRobot)
-	{
+	void RobotShape::setRobot(Model::RobotPtr aRobot) {
 		setModelObject(std::dynamic_pointer_cast<Model::ModelObject>(aRobot));
 	}
 	/**
 	 *
 	 */
-	void RobotShape::handleActivated()
-	{
-		Model::GoalPtr goal = Model::RobotWorld::getRobotWorld().getGoal( "Goal");
-		if (goal)
-		{
+	void RobotShape::handleActivated() {
+		Model::GoalPtr goal = Model::RobotWorld::getRobotWorld().getGoal("Goal");
+		if (goal) {
 			wxPoint goalPosition = goal->getPosition();
 			wxPoint robotPosition = getRobot()->getPosition();
-			getRobot()->setFront( Model::BoundedVector( goalPosition, robotPosition), false);
+			getRobot()->setFront(Model::BoundedVector(goalPosition, robotPosition), false);
 		}
 	}
 	/**
 	 *
 	 */
-	void RobotShape::handleSelection()
-	{
-		if (robotWorldCanvas->isShapeSelected() && robotWorldCanvas->getSelectedShape()->getObjectId() == getObjectId())
-		{
+	void RobotShape::handleSelection() {
+		if (robotWorldCanvas->isShapeSelected() && robotWorldCanvas->getSelectedShape()->getObjectId() == getObjectId()) {
 			setSelected();
-		} else
-		{
+		} else {
 			setSelected(false);
 		}
 	}
 	/**
 	 *
 	 */
-	void RobotShape::handleNotification()
-	{
-		setCentre( getRobot()->getPosition());
+	void RobotShape::handleNotification() {
+		setCentre(getRobot()->getPosition());
 		robotWorldCanvas->handleNotification();
 	}
 	/**
 	 *
 	 */
-	void RobotShape::draw( wxDC& dc)
-	{
+	void RobotShape::draw(wxDC &dc) {
 		//FUNCTRACE_DEVELOP();
 
-		updateSizeToTitle( dc);
+		updateSizeToTitle(dc);
 
-		drawStartPosition( dc);
+		drawStartPosition(dc);
 
-		if(Application::MainApplication::getSettings().getDrawOpenSet())
-		{
-			drawOpenSet( dc);
+		if (Application::MainApplication::getSettings().getDrawOpenSet()) {
+			drawOpenSet(dc);
 		}
 
-		drawPath( dc);
+		drawPath(dc);
 
-		drawRobot( dc);
+		drawRobot(dc);
 
-		drawLaser( dc);
+		drawLaser(dc);
 
-		drawLidar( dc);
+		drawLidar(dc);
 
-		drawParticles( dc);
+		drawParticles(dc);
+
+		drawKalman(dc);
 	}
 	/**
 	 *
 	 */
-	bool RobotShape::occupies( const wxPoint& aPoint) const
-	{
+	bool RobotShape::occupies(const wxPoint &aPoint) const {
 		wxPoint cornerPoints[] = { getRobot()->getFrontRight(), getRobot()->getFrontLeft(), getRobot()->getBackLeft(), getRobot()->getBackRight() };
-		return Utils::Shape2DUtils::isInsidePolygon( cornerPoints, 4, aPoint);
+		return Utils::Shape2DUtils::isInsidePolygon(cornerPoints, 4, aPoint);
 	}
 	/**
 	 *
 	 */
-	void RobotShape::setCentre( const wxPoint& aPoint)
-	{
-		getRobot()->setPosition( aPoint, false);
-		RectangleShape::setCentre( getRobot()->getPosition());
+	void RobotShape::setCentre(const wxPoint &aPoint) {
+		getRobot()->setPosition(aPoint, false);
+		RectangleShape::setCentre(getRobot()->getPosition());
 	}
 	/**
 	 *
 	 */
-	void RobotShape::handleEndDrag()
-	{
+	void RobotShape::handleEndDrag() {
 		FUNCTRACE_DEVELOP();
 	}
 	/**
 	 *
 	 */
-	std::string RobotShape::asString() const
-	{
+	std::string RobotShape::asString() const {
 		std::ostringstream os;
 
 		os << "RobotShape " << RectangleShape::asString();
@@ -138,14 +124,12 @@ namespace View
 	/**
 	 *
 	 */
-	std::string RobotShape::asDebugString() const
-	{
+	std::string RobotShape::asDebugString() const {
 		std::ostringstream os;
 
 		os << "RobotShape:\n";
 		os << RectangleShape::asDebugString() << "\n";
-		if (getRobot())
-		{
+		if (getRobot()) {
 			os << getRobot()->asDebugString();
 		}
 
@@ -154,166 +138,142 @@ namespace View
 	/**
 	 *
 	 */
-	void RobotShape::updateSizeToTitle( wxDC& dc)
-	{
+	void RobotShape::updateSizeToTitle(wxDC &dc) {
 		// The minimum size of the RectangleShape is the size of the title
-		titleSize = dc.GetTextExtent( title);
-		if (size.x < (titleSize.x + 2 * spacing + 2 * borderWidth))
-		{
+		titleSize = dc.GetTextExtent(title);
+		if (size.x < (titleSize.x + 2 * spacing + 2 * borderWidth)) {
 			size.x = titleSize.x + 2 * spacing + 2 * borderWidth;
 		}
-		if (size.y < (titleSize.y + 2 * spacing + 2 * borderWidth))
-		{
+		if (size.y < (titleSize.y + 2 * spacing + 2 * borderWidth)) {
 			size.y = titleSize.y + 2 * spacing + 2 * borderWidth;
 		}
-		if (getRobot()->getSize() != size)
-		{
-			getRobot()->setSize( size, false);
+		if (getRobot()->getSize() != size) {
+			getRobot()->setSize(size, false);
 		}
 	}
 	/**
 	 *
 	 */
-	void RobotShape::drawStartPosition( wxDC& dc)
-	{
+	void RobotShape::drawStartPosition(wxDC &dc) {
 		// Draw the start position
-		dc.SetPen( wxPen(  "RED", borderWidth + 5, wxPENSTYLE_SOLID));
-		dc.DrawCircle( getRobot()->startPosition, 3);
+		dc.SetPen(wxPen("RED", borderWidth + 5, wxPENSTYLE_SOLID));
+		dc.DrawCircle(getRobot()->startPosition, 3);
 	}
 	/**
 	 *
 	 */
-	void RobotShape::drawOpenSet( wxDC& dc)
-	{
+	void RobotShape::drawOpenSet(wxDC &dc) {
 		PathAlgorithm::OpenSet openSet = getRobot()->getOpenSet();
-		if (openSet.size() != 0)
-		{
-			dc.SetPen( wxPen( "PALE GREEN", borderWidth, wxPENSTYLE_SOLID));
-			for (const PathAlgorithm::Vertex &vertex : openSet)
-			{
-				dc.DrawPoint( vertex.asPoint());
+		if (openSet.size() != 0) {
+			dc.SetPen(wxPen("PALE GREEN", borderWidth, wxPENSTYLE_SOLID));
+			for (const PathAlgorithm::Vertex &vertex : openSet) {
+				dc.DrawPoint(vertex.asPoint());
 			}
 		}
 	}
 	/**
 	 *
 	 */
-	void RobotShape::drawPath( wxDC& dc)
-	{
+	void RobotShape::drawPath(wxDC &dc) {
 		PathAlgorithm::Path path = getRobot()->getPath();
-		if (path.size() != 0)
-		{
-			dc.SetPen( wxPen(  "BLACK", borderWidth, wxPENSTYLE_SOLID));
-			for (const PathAlgorithm::Vertex &vertex : path)
-			{
-				dc.DrawPoint( vertex.asPoint());
+		if (path.size() != 0) {
+			dc.SetPen(wxPen("BLACK", borderWidth, wxPENSTYLE_SOLID));
+			for (const PathAlgorithm::Vertex &vertex : path) {
+				dc.DrawPoint(vertex.asPoint());
 			}
 		}
 	}
 	/**
 	 *
 	 */
-	void RobotShape::drawRobot( wxDC& dc)
-	{
+	void RobotShape::drawRobot(wxDC &dc) {
 		// Draws a rectangle with the given top left corner, and with the given size.
-		dc.SetBrush( *wxWHITE_BRUSH);
-		if (isSelected())
-		{
-			dc.SetPen( wxPen( getSelectionColour(), borderWidth, wxPENSTYLE_SOLID));
-		} else
-		{
-			dc.SetPen( wxPen( getNormalColour(), borderWidth, wxPENSTYLE_SOLID));
+		dc.SetBrush(*wxWHITE_BRUSH);
+		if (isSelected()) {
+			dc.SetPen(wxPen(getSelectionColour(), borderWidth, wxPENSTYLE_SOLID));
+		} else {
+			dc.SetPen(wxPen(getNormalColour(), borderWidth, wxPENSTYLE_SOLID));
 		}
 		wxPoint cornerPoints[] = { getRobot()->getFrontRight(), getRobot()->getFrontLeft(), getRobot()->getBackLeft(), getRobot()->getBackRight() };
-		dc.DrawPolygon( 4, cornerPoints);
+		dc.DrawPolygon(4, cornerPoints);
 
-		dc.SetPen( wxPen(  "RED", borderWidth + 2, wxPENSTYLE_SOLID));
-		dc.DrawPoint( cornerPoints[1]);
-		dc.SetPen( wxPen(  "GREEN", borderWidth + 2, wxPENSTYLE_SOLID));
-		dc.DrawPoint( cornerPoints[0]);
-		dc.SetPen( wxPen( "INDIAN RED", borderWidth + 2, wxPENSTYLE_SOLID));
-		dc.DrawPoint( cornerPoints[2]);
-		dc.SetPen( wxPen( "PALE GREEN", borderWidth + 2, wxPENSTYLE_SOLID));
-		dc.DrawPoint( cornerPoints[3]);
+		dc.SetPen(wxPen("RED", borderWidth + 2, wxPENSTYLE_SOLID));
+		dc.DrawPoint(cornerPoints[1]);
+		dc.SetPen(wxPen("GREEN", borderWidth + 2, wxPENSTYLE_SOLID));
+		dc.DrawPoint(cornerPoints[0]);
+		dc.SetPen(wxPen("INDIAN RED", borderWidth + 2, wxPENSTYLE_SOLID));
+		dc.DrawPoint(cornerPoints[2]);
+		dc.SetPen(wxPen("PALE GREEN", borderWidth + 2, wxPENSTYLE_SOLID));
+		dc.DrawPoint(cornerPoints[3]);
 
-		double angle = Utils::Shape2DUtils::getAngle( getRobot()->getFront());
+		double angle = Utils::Shape2DUtils::getAngle(getRobot()->getFront());
 
 		// Draw the nose
-		dc.SetPen( wxPen(  "BLACK", 1, wxPENSTYLE_SOLID));
-		dc.DrawLine( centre.x, centre.y, static_cast< int >( centre.x + std::cos( angle) * 25), static_cast< int >( centre.y + std::sin( angle) * 25));
+		dc.SetPen(wxPen("BLACK", 1, wxPENSTYLE_SOLID));
+		dc.DrawLine(centre.x, centre.y, static_cast<int>(centre.x + std::cos(angle) * 25), static_cast<int>(centre.y + std::sin(angle) * 25));
 
-		int textOffsetx = static_cast< int >( std::cos( -angle - 0.5 * Utils::PI) * (titleSize.x / 2) + std::sin( -angle - 0.5 * Utils::PI) * (titleSize.y / 2));
-		int textOffsety = static_cast< int >( std::sin( -angle - 0.5 * Utils::PI) * (titleSize.x / 2) - std::cos( -angle - 0.5 * Utils::PI) * (titleSize.y / 2));
-		dc.DrawRotatedText( title, centre.x - textOffsetx, centre.y + textOffsety, (-angle - 0.5 * Utils::PI) / Utils::PI * 180);
+		int textOffsetx = static_cast<int>(std::cos(-angle - 0.5 * Utils::PI) * (titleSize.x / 2) + std::sin(-angle - 0.5 * Utils::PI) * (titleSize.y / 2));
+		int textOffsety = static_cast<int>(std::sin(-angle - 0.5 * Utils::PI) * (titleSize.x / 2) - std::cos(-angle - 0.5 * Utils::PI) * (titleSize.y / 2));
+		dc.DrawRotatedText(title, centre.x - textOffsetx, centre.y + textOffsety, (-angle - 0.5 * Utils::PI) / Utils::PI * 180);
 	}
 	/**
 	 *
 	 */
-	void RobotShape::drawLaser( wxDC& dc)
-	{
-		double angle = Utils::Shape2DUtils::getAngle( getRobot()->getFront());
+	void RobotShape::drawLaser(wxDC &dc) {
+		double angle = Utils::Shape2DUtils::getAngle(getRobot()->getFront());
 
 		// Draw the laser beam
-		dc.SetPen( wxPen(  "RED", 1, wxPENSTYLE_SOLID));
-		dc.DrawLine( centre.x, centre.y, static_cast< int >( centre.x + std::cos( angle) * Model::laserBeamLength), static_cast< int >( centre.y + std::sin( angle) * Model::laserBeamLength));
+		dc.SetPen(wxPen("RED", 1, wxPENSTYLE_SOLID));
+		dc.DrawLine(centre.x, centre.y, static_cast<int>(centre.x + std::cos(angle) * Model::laserBeamLength), static_cast<int>(centre.y + std::sin(angle) * Model::laserBeamLength));
 
 		// Draw the radar endPoints that are actually touching the walls
-		for (const Model::DistancePercept &d : getRobot()->currentRadarPointCloud)
-		{
-			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject))
-			{
-				dc.SetPen( wxPen(  "RED", borderWidth, wxPENSTYLE_SOLID));
-				dc.DrawCircle( d.point, 1);
+		for (const Model::DistancePercept &d : getRobot()->currentRadarPointCloud) {
+			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject)) {
+				dc.SetPen(wxPen("RED", borderWidth, wxPENSTYLE_SOLID));
+				dc.DrawCircle(d.point, 1);
 			}
 		}
-		//TODO: Make this its own function
-		for(unsigned i = 0; i < getRobot()->believedPosition.size(); ++i){
-			dc.DrawCircle(getRobot()->believedPosition.at(i), 2);
-		}
-	}
-
-	void RobotShape::drawLidar( wxDC& dc)
-	{
-		double angle = Utils::Shape2DUtils::getAngle( getRobot()->getFront());
-
-		// Draw the laser beam
-		dc.SetPen( wxPen(  "BLUE", 1, wxPENSTYLE_SOLID));
-//		dc.DrawLine( centre.x, centre.y, static_cast< int >( centre.x + std::cos( angle) * Model::laserBeamLength), static_cast< int >( centre.y + std::sin( angle) * Model::laserBeamLength));
-//		std::cout << "sfhslkdjfkldslfdsdkl" << std::endl;
-		// Draw the radar endPoints that are actually touching the walls
-
-		for (const Model::DistancePercept &d : getRobot()->currentLidarPointCloud)
-		{
-//			std::cout << "whaaaaaaaaaaat" << std::endl;
-			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject))
-			{
-				dc.DrawLine( centre.x, centre.y,centre.x + d.point.x, centre.y + d.point.y);
-				dc.SetPen( wxPen(  "Y", borderWidth, wxPENSTYLE_SOLID));
-			}
-		}
-//		for(unsigned i = 0; i < getRobot()->believedPosition.size(); ++i){
+//		//TODO: Make this its own function
+//		for (unsigned i = 0; i < getRobot()->believedPosition.size(); ++i) {
 //			dc.DrawCircle(getRobot()->believedPosition.at(i), 2);
 //		}
 	}
 
-	void RobotShape::drawParticles( wxDC& dc)
-	{
-		for (unsigned long i = 0; i < getRobot()->particleFilter.getParticleCloud().size(); ++i)
-		{
-			Model::Particle particle = getRobot()->particleFilter.getParticleCloud().at(i);
-			if (particle.position != wxDefaultPosition || (particle.position.x != Model::noObject && particle.position.y != Model::noObject))
-			{
-				dc.SetPen( wxPen(  "BLUE", borderWidth, wxPENSTYLE_SOLID));
-				dc.DrawCircle(particle.position, 1);
-//
-//				for(const Model::DistancePercept particlePoint : particle.pointCloud){
-////					std::cout << "current point: "<< particle.position << " intersect: " << particlePoint.point << std::endl;
-//					dc.SetPen( wxPen(  "RED", borderWidth, wxPENSTYLE_SOLID));
-//					dc.DrawCircle(particlePoint.point + particle.position, 1);
-//
-//				}
+	void RobotShape::drawLidar(wxDC &dc) {
+		double angle = Utils::Shape2DUtils::getAngle(getRobot()->getFront());
 
+		dc.SetPen(wxPen("BLUE", 1, wxPENSTYLE_SOLID));
+
+		for (const Model::DistancePercept &d : getRobot()->currentLidarPointCloud) {
+			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject)) {
+				dc.DrawLine(centre.x, centre.y, centre.x + d.point.x, centre.y + d.point.y);
+				dc.SetPen(wxPen("Y", borderWidth, wxPENSTYLE_SOLID));
 			}
 		}
+	}
+
+	void RobotShape::drawParticles(wxDC &dc) {
+		Application::MainSettings &settings = Application::MainApplication::getSettings();
+		if(settings.isParticleFilterActive()){
+			for (unsigned long i = 0;
+					i < getRobot()->particleFilter.getParticleCloud().size();
+					++i) {
+				Model::Particle particle = getRobot()->particleFilter.getParticleCloud().at(i);
+				if (particle.position != wxDefaultPosition || (particle.position.x != Model::noObject && particle.position.y != Model::noObject)) {
+					dc.SetPen(wxPen("BLUE", borderWidth, wxPENSTYLE_SOLID));
+					dc.DrawCircle(particle.position, 1);
+
+				}
+			}
+		}
+	}
+	void RobotShape::drawKalman(wxDC &dc) {
+		Application::MainSettings &settings = Application::MainApplication::getSettings();
+		if (settings.isKalmanActive()) {
+			for (unsigned i = 0; i < getRobot()->believedPosition.size(); ++i) {
+				dc.DrawCircle(getRobot()->believedPosition.at(i), 2);
+			}
+		}
+
 	}
 } // namespace View

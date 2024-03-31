@@ -157,6 +157,10 @@ namespace View
 			 *
 			 */
 			void drawParticles( wxDC& dc);
+			/**
+			 *
+			 */
+			void drawKalman( wxDC& dc);
 	};
 } // namespace View
 #endif // ROBOTSHAPE_HPP_
