@@ -8,12 +8,21 @@
 #include "RobotWorld.hpp"
 #include "Particle.hpp"
 #include "Robot.hpp"
+#include "MainApplication.hpp"
 #include <sstream>
 
 namespace Model {
-	Particle::Particle(const wxPoint &aPosition, const double &aWeight) :
-			position(aPosition), weight(aWeight) {
 
+	/**
+	 *
+	 */
+	/* static */double Particle::lidarDegrees = 10.0;
+	/**
+	 *
+	 */
+	Particle::Particle(const wxPoint &aPosition, const double &aWeight) : position(aPosition), weight(aWeight) {
+		Application::MainSettings& settings = Application::MainApplication::getSettings();
+		Particle::lidarDegrees = settings.getLidarDegrees();
 	}
 
 	Particle::~Particle() {
@@ -26,7 +35,7 @@ namespace Model {
 		std::vector<WallPtr> walls = RobotWorld::getRobotWorld().getWalls();
 		PointCloud tempPointCloud;
 
-		for (unsigned short j = 0; j < 360; j += 2) {
+		for (unsigned short j = 0; j < 360; j += Particle::lidarDegrees) {
 			double angle = Utils::MathUtils::toRadians(j);
 			double distance = noDistance;
 

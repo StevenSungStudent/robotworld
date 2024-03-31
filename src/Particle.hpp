@@ -13,7 +13,7 @@
 #include "Shape2DUtils.hpp"
 #include <vector>
 
-namespace Model{
+namespace Model {
 	class Particle {
 	public:
 		Particle(const wxPoint &aPostion, const double &aWeight);
@@ -30,6 +30,9 @@ namespace Model{
 		 * Returns a 1-line description of the object
 		 */
 		virtual std::string asString() const;
+
+	private:
+		static double lidarDegrees;
 	};
 }
 

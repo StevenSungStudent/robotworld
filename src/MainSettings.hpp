@@ -3,52 +3,76 @@
 
 #include "Config.hpp"
 
-namespace Application
-{
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <string>
+
+namespace Application {
 
 	/*
 	 *
 	 */
-	class MainSettings
-	{
-		public:
-			/**
-			 *
-			 */
-			MainSettings();
-			/**
-			 *
-			 */
-			virtual ~MainSettings();
-			/**
-			 *
-			 */
-			bool getDrawOpenSet() const;
-			/**
-			 *
-			 */
-			void setDrawOpenSet( bool aDrawOpenSet);
-			/**
-			 *
-			 */
-			unsigned long getSpeed() const;
-			/**
-			 *
-			 */
-			void setSpeed( unsigned long aSpeed);
-			/**
-			 *
-			 */
-			unsigned long getWorldNumber() const;
-			/**
-			 *
-			 */
-			void setWorldNumber( unsigned long aWorldNumber);
+	class MainSettings {
+	public:
+		/**
+		 *
+		 */
+		MainSettings();
+		/**
+		 *
+		 */
+		virtual ~MainSettings();
+		/**
+		 *
+		 */
+		bool getDrawOpenSet() const;
+		/**
+		 *
+		 */
+		void setDrawOpenSet(bool aDrawOpenSet);
+		/**
+		 *
+		 */
+		unsigned long getSpeed() const;
+		/**
+		 *
+		 */
+		void setSpeed(unsigned long aSpeed);
+		/**
+		 *
+		 */
+		unsigned long getWorldNumber() const;
+		/**
+		 *
+		 */
+		void setWorldNumber(unsigned long aWorldNumber);
 
-		private:
-			bool drawOpenSet;
-			unsigned long speed;
-			unsigned long worldNumber;
+		double getCompassError() const {
+			return compassError;
+		}
+
+		double getLidarDegrees() const {
+			return lidarDegrees;
+		}
+
+		double getLidarError() const {
+			return lidarError;
+		}
+
+		double getOdometerError() const {
+			return odometerError;
+		}
+
+	private:
+		bool drawOpenSet;
+		unsigned long speed;
+		unsigned long worldNumber;
+		double compassError;
+		double odometerError;
+		double lidarError;
+		double lidarDegrees;
+
+		void readConfiguration(const std::string &fileName);
 	};
 
 } /* namespace Application */
