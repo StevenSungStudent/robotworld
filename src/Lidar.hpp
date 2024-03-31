@@ -65,9 +65,10 @@ namespace Model
 		protected:
 		private:
 			/**
-			 * Standard deviation of the odometer per 10 pixels
+			 * Standard deviation of the lidar per 10 pixels
 			 */
 			static double stddev;
+			static double lidarDegrees;
 	};
 } // namespace Model
 

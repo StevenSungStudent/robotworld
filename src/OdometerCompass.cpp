@@ -12,6 +12,7 @@
 #include "Wall.hpp"
 #include "Shape2DUtils.hpp"
 #include "MathUtils.hpp"
+#include "MainApplication.hpp"
 
 namespace Model {
 	/**
@@ -22,8 +23,10 @@ namespace Model {
 	/**
 	 *
 	 */
-	OdometerCompass::OdometerCompass(Robot &aRobot) :
-			AbstractSensor(aRobot) {
+	OdometerCompass::OdometerCompass(Robot &aRobot) : AbstractSensor(aRobot) {
+		Application::MainSettings& settings = Application::MainApplication::getSettings();
+		OdometerCompass::stddevCompass = settings.getCompassError();
+		OdometerCompass::stddevOdometer = settings.getOdometerError();
 	}
 	/**
 	 *
