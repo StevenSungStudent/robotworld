@@ -11,11 +11,9 @@
 
 namespace Model {
 	ParticleFilter::ParticleFilter() {
-		// TODO Auto-generated constructor stub
 	}
 
 	ParticleFilter::~ParticleFilter() {
-		// TODO Auto-generated destructor stub
 	}
 
 	void ParticleFilter::generateParticles(const unsigned long &amount) {
@@ -48,7 +46,7 @@ namespace Model {
 
 			for (unsigned long i = 0; i < particleCloud.size(); ++i) {
 				std::normal_distribution<double> distrobution(0.0, 3.0);
-				wxPoint noise = wxPoint(distrobution(gen), distrobution(gen));
+				wxPoint noise = wxPoint(static_cast<int>(distrobution(gen)), static_cast<int>(distrobution(gen)));
 				particleCloud.at(i).position += difference + noise;
 			}
 		}

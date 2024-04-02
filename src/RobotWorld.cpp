@@ -275,17 +275,20 @@ namespace Model
 	/**
 	 *
 	 */
-	void RobotWorld::populate( int UNUSEDPARAM(aNumberOfWalls))
+	void RobotWorld::populate( int aNumberOfWalls)
 	{
 //		RobotWorld::getRobotWorld().newRobot( "Robot", wxPoint(163,111),false); // @suppress("Avoid magic numbers")
+		switch (aNumberOfWalls) {
+		case 4:
+			RobotWorld::getRobotWorld().newRobot("Robot", wxPoint(124, 119), false);
+			RobotWorld::getRobotWorld().newWall(wxPoint(774, 835), wxPoint(1012, 669), false);
+			RobotWorld::getRobotWorld().newWall(wxPoint(313, 358), wxPoint(594, 415), false);
+			RobotWorld::getRobotWorld().newWall(wxPoint(190, 779), wxPoint(312, 359), false);
+			RobotWorld::getRobotWorld().newWall(wxPoint(535, 24), wxPoint(601, 202), false);
+			RobotWorld::getRobotWorld().newWall(wxPoint(353, 14), wxPoint(9, 57), false);
+			RobotWorld::getRobotWorld().newGoal("Goal", wxPoint(928, 904), false);
+		}
 
-		RobotWorld::getRobotWorld().newRobot( "Robot", wxPoint(124,119),false);
-		RobotWorld::getRobotWorld().newWall( wxPoint(774,835),wxPoint(1012,669),false);
-		RobotWorld::getRobotWorld().newWall( wxPoint(313,358),wxPoint(594,415),false);
-		RobotWorld::getRobotWorld().newWall( wxPoint(190,779),wxPoint(312,359),false);
-		RobotWorld::getRobotWorld().newWall( wxPoint(535,24),wxPoint(601,202),false);
-		RobotWorld::getRobotWorld().newWall( wxPoint(353,14),wxPoint(9,57),false);
-		RobotWorld::getRobotWorld().newGoal( "Goal", wxPoint(928,904),false);
 
 
 //		RobotWorld::getRobotWorld().newRobot( "Robot", wxPoint(84,51),false);
