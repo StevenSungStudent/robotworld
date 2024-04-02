@@ -32,6 +32,7 @@ namespace Model {
 	 *
 	 */
 	std::shared_ptr<AbstractStimulus> OdometerCompass::getStimulus() const {
+		static wxPoint lastMeasurement = wxPoint(noDistance, noDistance);
 		Robot *robot = dynamic_cast<Robot*>(agent);
 		if (robot) {
 			std::random_device rd { };
@@ -43,11 +44,17 @@ namespace Model {
 
 			wxPoint robotLocation = robot->getPosition();
 			wxPoint robotPreviousLocation = robot->getPreviousPosition();
-			double odometerNoise = odometerError(gen);
 
-			double distance = Utils::Shape2DUtils::distance(robotLocation, robotPreviousLocation) + odometerNoise;
+			if(lastMeasurement.x == noDistance || lastMeasurement != robotLocation){
+				lastMeasurement = robotLocation;
+				double odometerNoise = odometerError(gen);
 
-			return (std::make_shared<DistanceStimulus>(angle, distance));
+				double distance = Utils::Shape2DUtils::distance(robotLocation, robotPreviousLocation) + odometerNoise;
+
+				return (std::make_shared<DistanceStimulus>(angle, distance));
+			}else{
+				return (std::make_shared<DistanceStimulus>(noAngle, noDistance));
+			}
 		}
 		return (std::make_shared<DistanceStimulus>(noAngle, noDistance));
 	}

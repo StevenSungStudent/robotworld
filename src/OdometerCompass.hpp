@@ -33,8 +33,6 @@ namespace Model
 		/**
 		 *
 		 */
-//		long lastX;
-//		long lastY;
 			/**
 			 *
 			 */
@@ -47,14 +45,7 @@ namespace Model
 			 *
 			 */
 			virtual std::shared_ptr< AbstractPercept > getPerceptFor( std::shared_ptr< AbstractStimulus > anAbstractStimulus) const override;
-//			/**
-//			 *
-//			 */
-//			static void setStdDev(double aStdDev) {OdometerCompass::stddev = aStdDev;}
-//			/**
-//			 *
-//			 */
-//			static double getStdDev(){ return stddev;}
+
 			/**
 			 * @name Debug functions
 			 */
@@ -77,23 +68,5 @@ namespace Model
 			static double stddevOdometer;
 	};
 } // namespace Model
-//
-//class OdometerCompass : Model::AbstractSensor{
-//public:
-//	OdometerCompass();
-//	virtual ~OdometerCompass();
-//
-//	long getNorth(const long &angle);
-//	std::pair<long, long> getDistance(const long &lastX, const long &lastY);
-//
-//	/**
-//	 * Get the raw measurements. This typically is done in the low level driver.
-//	 */
-//	std::shared_ptr< Model::AbstractStimulus > getStimulus();
-//	/**
-//	 * Translate the stimulus into a percept. This typically is done in the high level driver.
-//	 */
-//	std::shared_ptr< Model::AbstractPercept > getPerceptFor( std::shared_ptr< Model::AbstractStimulus > anAbstractPercepts);
-//};
 
 #endif /* SRC_ODOMETERCOMPASS_HPP_ */

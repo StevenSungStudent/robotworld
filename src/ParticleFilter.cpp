@@ -36,19 +36,25 @@ namespace Model {
 	}
 
 	void ParticleFilter::moveParticles() {
+		static wxPoint lastMeasurement = wxPoint(noDistance,noDistance);
 		RobotPtr robot = RobotWorld::getRobotWorld().getRobot("Robot");
 		if (robot) {
 			std::random_device randomDevice;
 			std::mt19937 gen(randomDevice());
 			wxPoint currentPosition = robot->getPosition();
 			wxPoint previousPosition = robot->getPreviousPosition();
-			wxPoint difference = currentPosition - previousPosition;
 
-			for (unsigned long i = 0; i < particleCloud.size(); ++i) {
-				std::normal_distribution<double> distrobution(0.0, 3.0);
-				wxPoint noise = wxPoint(static_cast<int>(distrobution(gen)), static_cast<int>(distrobution(gen)));
-				particleCloud.at(i).position += difference + noise;
+			if(lastMeasurement.x == noDistance || lastMeasurement != currentPosition){
+				lastMeasurement = currentPosition;
+				wxPoint difference = currentPosition - previousPosition;
+
+				for (unsigned long i = 0; i < particleCloud.size(); ++i) {
+					std::normal_distribution<double> distrobution(0.0, 3.0);
+					wxPoint noise = wxPoint(static_cast<int>(distrobution(gen)), static_cast<int>(distrobution(gen)));
+					particleCloud.at(i).position += difference + noise;
+				}
 			}
+
 		}
 
 	}
