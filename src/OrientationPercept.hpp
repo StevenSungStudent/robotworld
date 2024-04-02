@@ -30,8 +30,9 @@ namespace Model
 				angle(anAngle), distance(aDistance), point(aPoint)
 			{
 			}
-			double distance;
+
 			double angle;
+			double distance;
 			wxPoint point;
 			/**
 			 * @name Debug functions

@@ -35,7 +35,7 @@ namespace Model {
 		std::vector<WallPtr> walls = RobotWorld::getRobotWorld().getWalls();
 		PointCloud tempPointCloud;
 
-		for (unsigned short j = 0; j < 360; j += Particle::lidarDegrees) {
+		for (double j = 0; j < 360; j += Particle::lidarDegrees) {
 			double angle = Utils::MathUtils::toRadians(j);
 			double distance = noDistance;
 

@@ -399,7 +399,6 @@ namespace Model {
 			unsigned pathPoint = 0;
 			while (position.x > 0 && position.x < 1024 && position.y > 0 && position.y < 1024 && pathPoint < path.size()) // @suppress("Avoid magic numbers")
 			{
-				//NOTE: used to be position
 				// Do the update
 				const PathAlgorithm::Vertex &vertex = path[pathPoint += static_cast<unsigned int>(speed)];
 				front = BoundedVector(vertex.asPoint(), position);
@@ -537,7 +536,7 @@ namespace Model {
 		auto result = kalmanFilter(stateVector, covarianceMatrix, A, B, I, measurement, u, Q);
 		stateVector = result.first;
 
-		believedPosition.push_back(wxPoint(stateVector.at(0, 0), stateVector.at(1, 0)));
+		believedPosition.push_back(wxPoint(static_cast<int>(stateVector.at(0, 0)), static_cast<int>(stateVector.at(1, 0))));
 		covarianceMatrix = result.second;
 
 	}

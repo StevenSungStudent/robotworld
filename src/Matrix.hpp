@@ -270,7 +270,7 @@ bool equals(const Matrix< T, M, N>& lhs,
 template< class T, std::size_t M, std::size_t N>
 Matrix< T, M, N > determinePredictedStateVector(Matrix< T, M, M > A, Matrix< T, M, N > stateVector, Matrix< T, M, M > B, Matrix< T, M, N > u ){
 	Matrix< T, M, N > result;
-	result = (A * stateVector) + (B * u); //TODO:FIX
+	result = (A * stateVector) + (B * u);
 	return (result);
 }
 
@@ -320,7 +320,6 @@ std::pair<Matrix< T, M, N >, Matrix< T, M, M >> kalmanFilter(Matrix<T, M, N>stat
     Matrix<T, M, M>C = predictedCovarianceMatrix.identity();
 
 	Matrix< T, M, M > kalmanGain = determineKalmanGain(predictedCovarianceMatrix, Q, I, I.transpose());
-	std::cout << kalmanGain << std::endl;
 
 	Matrix< T, M, N > adjustedStateVector = determineAdjustedStateVector(predictedStateVector, kalmanGain, measurement, C);
 	Matrix< T, M, M > adjustedProcessCovarianceMatrix = determineAdjustedProcessCovarianceMatrix(I, kalmanGain, C, predictedCovarianceMatrix);
@@ -335,7 +334,6 @@ Matrix<T, M_state, N_state> calc(const Matrix<T, M_state, N_state> &m0, Matrix<T
 		temp = temp * m1;
 	}
 	Matrix<T, M_state,  N_state> endState = m0 * temp;
-	std::cout  << endState << std::endl;
 	return endState;
 }
 

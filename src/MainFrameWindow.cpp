@@ -525,21 +525,11 @@ namespace Application {
 	void MainFrameWindow::OnPopulate(wxCommandEvent&UNUSEDPARAM(anEvent)) {
 		switch (worldNumber->GetSelection()) {
 		case 0: {
-			robotWorldCanvas->populate(4);
-			// TODO Do something...
-//				std::shared_ptr<View::RobotShape> robotShape = std::dynamic_pointer_cast<View::RobotShape>(robotWorldCanvas->getSelectedShape());
-//				if(robotShape)
-//				{
-//					TRACE_DEVELOP("It should be checked...");
-//					drawOpenSetCheckbox->SetValue(robotShape->getDrawOpenSet());
-//				}else
-//				{
-//					TRACE_DEVELOP("No robotShape? It is not checked...");
-//				}
+
 			break;
 		}
 		case 1: {
-			TRACE_DEVELOP("Please create your own student world 1");
+			robotWorldCanvas->populate(4);
 			break;
 		}
 		case 2: {
@@ -601,19 +591,19 @@ namespace Application {
 			robot->stopCommunicating();
 		}
 	}
-	void MainFrameWindow::OnDisplayKalman( wxCommandEvent& anEvent){
+	void MainFrameWindow::OnDisplayKalman( wxCommandEvent&UNUSEDPARAM(anEvent)){
 		MainSettings& settings = MainApplication::getSettings();
 		settings.setKalmanActive(true);
 	}
-	void MainFrameWindow::OnHideKalman( wxCommandEvent& anEvent){
+	void MainFrameWindow::OnHideKalman( wxCommandEvent&UNUSEDPARAM(anEvent)){
 		MainSettings& settings = MainApplication::getSettings();
 		settings.setKalmanActive(false);
 	}
-	void MainFrameWindow::OnDisplayParticleFilter( wxCommandEvent& anEvent){
+	void MainFrameWindow::OnDisplayParticleFilter( wxCommandEvent&UNUSEDPARAM(anEvent)){
 		MainSettings& settings = MainApplication::getSettings();
 		settings.setParticleFilterActive(true);
 	}
-	void MainFrameWindow::OnHideParticleFilter( wxCommandEvent& anEvent){
+	void MainFrameWindow::OnHideParticleFilter( wxCommandEvent&UNUSEDPARAM(anEvent)){
 		MainSettings& settings = MainApplication::getSettings();
 		settings.setParticleFilterActive(false);
 	}

@@ -26,9 +26,8 @@ namespace Model {
 	/**
 	 *
 	 */
-	Lidar::Lidar(Robot &aRobot) :
-			AbstractSensor(aRobot) {
-		Application::MainSettings &settings = Application::MainApplication::getSettings();
+	Lidar::Lidar(Robot &aRobot) : AbstractSensor(aRobot) {
+		const Application::MainSettings &settings = Application::MainApplication::getSettings();
 		Lidar::stddev = settings.getLidarError();
 		Lidar::lidarDegrees = settings.getLidarDegrees();
 	}
@@ -44,7 +43,7 @@ namespace Model {
 			std::normal_distribution<> noise { 0, Lidar::stddev };
 
 			std::vector<WallPtr> walls = RobotWorld::getRobotWorld().getWalls();
-			for (unsigned short i = 0; i < 360; i += Lidar::lidarDegrees) {
+			for (double i = 0; i < 360; i += Lidar::lidarDegrees) {
 				double distance = noDistance;
 				double angle = Utils::MathUtils::toRadians(i);
 
@@ -81,7 +80,6 @@ namespace Model {
 			AbstractStimulus> anAbstractStimulus) const {
 		Robot *robot = dynamic_cast<Robot*>(agent);
 		if (robot) {
-			wxPoint robotLocation = robot->getPosition();
 
 			DistanceStimuli *distanceStimuli = dynamic_cast<DistanceStimuli*>(anAbstractStimulus.get());
 			if (distanceStimuli) {

@@ -233,31 +233,23 @@ namespace View {
 				dc.DrawCircle(d.point, 1);
 			}
 		}
-//		//TODO: Make this its own function
-//		for (unsigned i = 0; i < getRobot()->believedPosition.size(); ++i) {
-//			dc.DrawCircle(getRobot()->believedPosition.at(i), 2);
-//		}
 	}
 
 	void RobotShape::drawLidar(wxDC &dc) {
-		double angle = Utils::Shape2DUtils::getAngle(getRobot()->getFront());
-
 		dc.SetPen(wxPen("BLUE", 1, wxPENSTYLE_SOLID));
 
 		for (const Model::DistancePercept &d : getRobot()->currentLidarPointCloud) {
 			if (d.point != wxDefaultPosition || (d.point.x != Model::noObject && d.point.y != Model::noObject)) {
 				dc.DrawLine(centre.x, centre.y, centre.x + d.point.x, centre.y + d.point.y);
-				dc.SetPen(wxPen("Y", borderWidth, wxPENSTYLE_SOLID));
+				dc.SetPen(wxPen("YELLOW", borderWidth, wxPENSTYLE_SOLID));
 			}
 		}
 	}
 
 	void RobotShape::drawParticles(wxDC &dc) {
-		Application::MainSettings &settings = Application::MainApplication::getSettings();
+		const Application::MainSettings &settings = Application::MainApplication::getSettings();
 		if(settings.isParticleFilterActive()){
-			for (unsigned long i = 0;
-					i < getRobot()->particleFilter.getParticleCloud().size();
-					++i) {
+			for (unsigned long i = 0; i < getRobot()->particleFilter.getParticleCloud().size(); ++i) {
 				Model::Particle particle = getRobot()->particleFilter.getParticleCloud().at(i);
 				if (particle.position != wxDefaultPosition || (particle.position.x != Model::noObject && particle.position.y != Model::noObject)) {
 					dc.SetPen(wxPen("BLUE", borderWidth, wxPENSTYLE_SOLID));
@@ -268,9 +260,10 @@ namespace View {
 		}
 	}
 	void RobotShape::drawKalman(wxDC &dc) {
-		Application::MainSettings &settings = Application::MainApplication::getSettings();
+		const Application::MainSettings &settings = Application::MainApplication::getSettings();
 		if (settings.isKalmanActive()) {
 			for (unsigned i = 0; i < getRobot()->believedPosition.size(); ++i) {
+				dc.SetPen(wxPen("RED", borderWidth, wxPENSTYLE_SOLID));
 				dc.DrawCircle(getRobot()->believedPosition.at(i), 2);
 			}
 		}
