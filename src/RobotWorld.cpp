@@ -289,50 +289,6 @@ namespace Model
 			RobotWorld::getRobotWorld().newGoal("Goal", wxPoint(928, 904), false);
 		}
 
-
-
-//		RobotWorld::getRobotWorld().newRobot( "Robot", wxPoint(84,51),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(774,835),wxPoint(1012,669),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(313,358),wxPoint(594,415),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(190,779),wxPoint(312,359),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(535,24),wxPoint(601,202),false);
-//		RobotWorld::getRobotWorld().newGoal( "Goal", wxPoint(928,904),false);
-
-
-
-//		RobotWorld::getRobotWorld().newRobot( "Robot", wxPoint(84,51),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(774,835),wxPoint(1012,669),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(32,6),wxPoint(534,22),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(190,779),wxPoint(312,359),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(535,24),wxPoint(535,176),false);
-//		RobotWorld::getRobotWorld().newGoal( "Goal", wxPoint(766,61),false);
-
-
-//		RobotWorld::getRobotWorld().newRobot( "Robot", wxPoint(84,51),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(774,835),wxPoint(1012,669),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(32,6),wxPoint(13,152),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(32,4),wxPoint(305,7),false);
-//		RobotWorld::getRobotWorld().newWall( wxPoint(280,156),wxPoint(4,155),false);
-//		RobotWorld::getRobotWorld().newGoal( "Goal", wxPoint(99,255),false);
-
-
-//		static const wxPoint coordinates[] = {
-//			wxPoint( 100, 25), wxPoint( 700, 25),
-//			wxPoint( 75, 200), wxPoint( 250, 600),
-//			wxPoint( 800, 300), wxPoint( 800, 700),
-//			wxPoint( 50, 825), wxPoint( 600, 825)};
-//
-//		for (int i = 0; i < 2 * aNumberOfWalls; i += 2)
-//		{
-//			RobotWorld::getRobotWorld().newWall( coordinates[i], coordinates[i + 1],false);
-//		}
-//
-//		RobotWorld::getRobotWorld().newGoal( "Goal", wxPoint(850, 500),false); // @suppress("Avoid magic numbers")
-		
-//		RobotWorld::getRobotWorld().newWall( wxPoint(7,234), wxPoint(419,234) ,false); // @suppress("Avoid magic numbers")
-//		RobotWorld::getRobotWorld().newGoal( "Goal", wxPoint(320,285),false); // @suppress("Avoid magic numbers")
-		
-
 		notifyObservers();
 	}
 	/**

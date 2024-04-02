@@ -95,7 +95,7 @@ namespace Model
 			/**
 			 * A sensor reads 10 stimuli/second (it sleeps for 100 ms) by default
 			 */
-			virtual void setOn( unsigned long aSleepTime = 300);
+			virtual void setOn( unsigned long aSleepTime = 100);
 			/**
 			 *
 			 */

@@ -424,7 +424,9 @@ namespace Model {
 							currentRadarPointCloud.push_back(*distancePercept);
 						} else if (typeid(tempAbstractPercept) == typeid(OrientationPercept)) {
 							OrientationPercept *orientation = dynamic_cast<OrientationPercept*>(percept.value().get());
-							calculateBelieve(orientation);
+							if(orientation->distance != invalidDistance){
+								calculateBelieve(orientation);
+							}
 						} else if (typeid(tempAbstractPercept) == typeid(DistancePercepts)) {
 							DistancePercepts *distancePercepts = dynamic_cast<DistancePercepts*>(percept.value().get());
 							currentLidarPointCloud = distancePercepts->pointCloud;
@@ -445,7 +447,7 @@ namespace Model {
 				notifyObservers();
 
 				// If there is no sleep_for here the robot will immediately be on its destination....
-				std::this_thread::sleep_for(std::chrono::milliseconds(300)); // @suppress("Avoid magic numbers")
+				std::this_thread::sleep_for(std::chrono::milliseconds(100)); // @suppress("Avoid magic numbers")
 
 				// this should be the last thing in the loop
 				if (driving == false) {
@@ -502,7 +504,6 @@ namespace Model {
 		const std::vector<WallPtr> &walls = RobotWorld::getRobotWorld().getWalls();
 		for (WallPtr wall : walls) {
 			if (Utils::Shape2DUtils::intersect(frontLeft, frontRight, wall->getPoint1(), wall->getPoint2()) || Utils::Shape2DUtils::intersect(frontLeft, backLeft, wall->getPoint1(), wall->getPoint2()) || Utils::Shape2DUtils::intersect(frontRight, backRight, wall->getPoint1(), wall->getPoint2()))
-			// cppcheck-suppress useStlAlgorithm
 			{
 				return true;
 			}
